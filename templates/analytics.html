@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Analytics — FraudShield.AI{% endblock %}
+{% block content %}
+
+<div class="container pb-5" style="padding-top:110px;">
+  <h2 class="fw-bold mb-4">📊 Fraud Analytics Dashboard</h2>
+
+  {% if no_data %}
+    <div class="alert alert-warning">
+      No analytics available yet. Use the Checker or Resources to analyze data first.
+    </div>
+  {% else %}
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-4"><div class="metric-box text-center p-4"><h3 class="fw-bold">{{ total }}</h3><div class="text-muted">Total Records</div></div></div>
+    <div class="col-md-4"><div class="metric-box text-center p-4"><h3 class="fw-bold text-danger">{{ fraud }}</h3><div class="text-muted">Fraudulent</div></div></div>
+    <div class="col-md-4"><div class="metric-box text-center p-4"><h3 class="fw-bold text-success">{{ avg_risk }}%</h3><div class="text-muted">Average Risk</div></div></div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="chart-card p-4">
+        <h5 class="fw-bold mb-3">📈 Fraud Detection Trend</h5>
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="chart-card p-4">
+        <h5 class="fw-bold mb-3">🌍 Fraud by Region</h5>
+        <canvas id="regionChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="chart-card p-4">
+        <h5 class="fw-bold mb-3">⚖️ Fraud vs Legit</h5>
+        <canvas id="ratioChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="chart-card p-4">
+        <h5 class="fw-bold mb-3">📉 Risk Score Distribution</h5>
+        <canvas id="riskChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  {% endif %}
+</div>
+
+{% if not no_data %}
+<script>
+window.analyticsData = {
+  records: {{ records | tojson }},
+  regionCounts: {{ region_counts | tojson }}
+};
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const recs = window.analyticsData.records || [];
+  const regionCounts = window.analyticsData.regionCounts || {};
+
+  const risks = recs.map(r => r.risk);
+  const preds = recs.map(r => r.prediction);
+
+  const regionLabels = Object.keys(regionCounts);
+  const regionValues = Object.values(regionCounts);
+
+  function bins(values, step=5){
+    const b = new Array(20).fill(0);
+    values.forEach(v => {
+      const i = Math.min(b.length-1, Math.floor(v/step));
+      b[i]++;
+    });
+    return b;
+  }
+
+  // Trend (dummy)
+  new Chart(document.getElementById("trendChart"), {
+    type: "line",
+    data: {
+      labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"],
+      datasets: [{
+        label: "Fraud Alerts",
+        data: [12,17,14,20,23,27,29,35],
+        borderColor: "#1d7cff",
+        borderWidth: 3,
+        tension: 0.35
+      }]
+    }
+  });
+
+  // Region
+  new Chart(document.getElementById("regionChart"), {
+    type: "bar",
+    data: {
+      labels: regionLabels,
+      datasets: [{ label: "Cases", data: regionValues, backgroundColor: "#36a2eb" }]
+    }
+  });
+
+  // Ratio
+  const fraud = preds.filter(p => p === 1).length;
+  const legit = preds.length - fraud;
+  new Chart(document.getElementById("ratioChart"), {
+    type: "doughnut",
+    data: {
+      labels: ["Fraud","Legit"],
+      datasets: [{ data: [fraud, legit], backgroundColor: ["#ff4d4d","#2ecc71"] }]
+    }
+  });
+
+  // Risk histogram
+  new Chart(document.getElementById("riskChart"), {
+    type: "bar",
+    data: {
+      labels: [...Array(20)].map((_,i)=>`${i*5}-${i*5+5}`),
+      datasets: [{ label: "Risk Density", data: bins(risks), backgroundColor: "#ffa726" }]
+    }
+  });
+});
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}Resources — FraudShield.AI{% endblock %}
+
+{% block content %}
+
+<style>
+.resources-header {
+    margin-top: 110px;
+    text-align: center;
+}
+
+.dataset-card {
+    border-radius: 14px;
+    padding: 25px;
+    background: #ffffff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    transition: 0.25s;
+}
+.dataset-card:hover {
+    transform: translateY(-4px);
+}
+
+.results-box {
+    border-radius: 14px;
+    padding: 25px;
+    background: #ffffff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+}
+</style>
+
+<div class="container pb-5">
+
+    <!-- HEADER -->
+    <div class="resources-header mb-5">
+        <h2 class="fw-bold text-primary">Fraud Detection Resources</h2>
+        <p class="text-muted">Download datasets or test them directly using the built-in analysis tool.</p>
+    </div>
+
+    <!-- DATASETS -->
+    <div class="row g-4">
+
+        <!-- SMALL DATASET -->
+        <div class="col-md-6">
+            <div class="dataset-card">
+                <h5 class="fw-bold">Demo Dataset (10 rows)</h5>
+                <p class="text-muted">Perfect for a quick model test.</p>
+
+                <a href="/static/datasets/demo_small.csv" download class="btn btn-outline-primary me-2">
+                    ⬇️ Download CSV
+                </a>
+
+                <button class="btn btn-success test-btn"
+                        data-file="/static/datasets/demo_small.csv">
+                    🚀 Test This Dataset
+                </button>
+            </div>
+        </div>
+
+        <!-- MEDIUM DATASET -->
+        <div class="col-md-6">
+            <div class="dataset-card">
+                <h5 class="fw-bold">Extended Dataset (50 rows)</h5>
+                <p class="text-muted">Realistic dataset for pattern analysis.</p>
+
+                <a href="/static/datasets/demo_medium.csv" download class="btn btn-outline-primary me-2">
+                    ⬇️ Download CSV
+                </a>
+
+                <button class="btn btn-success test-btn"
+                        data-file="/static/datasets/demo_medium.csv">
+                    🚀 Test This Dataset
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <hr class="my-5">
+
+    <!-- RESULTS SECTION -->
+    <div id="results" class="results-box mx-auto" style="max-width:650px; display:none;">
+        <h4 class="fw-bold text-center text-primary mb-4">📈 Test Results</h4>
+
+        <p><strong>Total Records:</strong> <span id="resTotal">-</span></p>
+        <p><strong>Fraudulent:</strong> <span id="resFraud">-</span></p>
+        <p><strong>Fraud Rate:</strong> <span id="resRate">-</span>%</p>
+
+        <a id="resDownload" href="#" class="btn btn-outline-primary mt-3" target="_blank" style="display:none;">
+            ⬇️ Download Predictions
+        </a>
+    </div>
+
+    <!-- EXTRA RESOURCES -->
+    <div class="text-center mt-5">
+        <h4 class="fw-bold">🔗 Extra Learning</h4>
+        <p class="text-muted">Improve your fraud detection knowledge.</p>
+
+        <a href="https://towardsdatascience.com/fraud-detection-with-machine-learning-using-python-5f7d1e662fca"
+           target="_blank" class="btn btn-outline-dark me-2">🧠 ML Guide</a>
+
+        <a href="https://kaggle.com/datasets"
+           target="_blank" class="btn btn-outline-dark">📂 Kaggle Datasets</a>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ✅ AUTO-TEST DATASET + REDIRECT TO ANALYTICS
+document.addEventListener("DOMContentLoaded", () => {
+  const testButtons = document.querySelectorAll(".test-btn");
+
+  testButtons.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const filePath = btn.getAttribute("data-file");
+      const fileName = filePath.split("/").pop();
+      const url = window.location.origin + filePath;
+
+      try {
+        // Load CSV file from static directory
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const file = new File([blob], fileName, { type: "text/csv" });
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // ✅ Upload to Flask
+        const uploadResponse = await fetch("/upload_csv", {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await uploadResponse.json();
+
+        if (!result.ok) {
+          alert("❌ " + result.error);
+          return;
+        }
+
+        // ✅ Show Results
+        document.getElementById("resTotal").textContent = result.total;
+        document.getElementById("resFraud").textContent = result.fraud_count;
+        document.getElementById("resRate").textContent = result.fraud_rate;
+        document.getElementById("resDownload").href = result.download_link;
+        document.getElementById("resDownload").style.display = "block";
+
+        document.getElementById("results").style.display = "block";
+
+        // ✅ Redirect to analytics
+        setTimeout(() => {
+          window.location.href = "/analytics";
+        }, 1200);
+
+      } catch (err) {
+        alert("Error testing dataset: " + err.message);
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

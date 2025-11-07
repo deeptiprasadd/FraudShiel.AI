@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Blog — FraudShield.AI{% endblock %}
+
+{% block content %}
+
+<style>
+.blog-header {
+    margin-top: 110px;
+    text-align: center;
+}
+.blog-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: 0.3s;
+    height: 100%;
+}
+.blog-card:hover {
+    transform: translateY(-6px);
+}
+.blog-img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+.blog-body {
+    padding: 20px;
+}
+.blog-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+.blog-overview {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+.blog-btn {
+    margin-top: 12px;
+}
+</style>
+
+<div class="container pb-5">
+
+    <div class="blog-header mb-4">
+        <h2 class="fw-bold text-primary">📰 FraudShield.AI Blog</h2>
+        <p class="text-muted">Latest insights, research, and fraud prevention articles.</p>
+    </div>
+
+    <div class="row g-4">
+
+        {% for article in articles %}
+        <div class="col-md-4">
+            <div class="blog-card">
+
+                <img class="blog-img"
+                     src="{{ url_for('static', filename=article.image) }}"
+                     alt="{{ article.title }}">
+
+                <div class="blog-body">
+                    <div class="blog-title">{{ article.title }}</div>
+                    <p class="blog-overview">{{ article.overview }}</p>
+
+                    <a href="/blog/{{ article.slug }}" 
+                       class="btn btn-primary w-100 blog-btn">
+                        Read Overview →
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
