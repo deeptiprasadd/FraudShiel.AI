@@ -1,0 +1,54 @@
+:root{
+  --nav-bg: #272a33;
+  --brand-blue: #1d9cff;
+}
+
+*{ box-sizing: border-box; }
+body{ font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif; background:#f7f9fc; }
+
+/* Navbar */
+.app-navbar{ background: var(--nav-bg); box-shadow: 0 2px 0 rgba(255,255,255,0.05) inset; }
+.navbar .nav-link{ color:#e6e8ec; }
+.navbar .nav-link:hover{ color:#fff; }
+.brand-accent{ color: var(--brand-blue); }
+
+/* Hero */
+.hero-section{
+  position: relative;
+  height: 78vh;
+  min-height: 520px;
+  color: #fff;
+  background: radial-gradient(1200px 600px at 50% -10%, rgba(0,119,182,0.25), rgba(0,0,0,0)) , #07101a;
+  overflow: hidden;
+}
+#heroCanvas{
+  position:absolute; inset:0; width:100%; height:100%; pointer-events:none;
+}
+.hero-title{ text-shadow: 0 6px 28px rgba(0,0,0,0.65); }
+.fw-extra{ font-weight: 800; }
+.ai-text{ color: #27c2ff; }
+.hero-subtext{ max-width: 900px; opacity: .92; }
+.hero-cta{ animation: breath 2.4s ease-in-out infinite; }
+@keyframes breath { 0%{transform:scale(1); box-shadow:0 0 10px rgba(255,240,0,.35)} 50%{transform:scale(1.03); box-shadow:0 0 18px rgba(255,240,0,.6)} 100%{transform:scale(1); box-shadow:0 0 10px rgba(255,240,0,.35)} }
+
+/* Feature / cards */
+.feature-card{ background:#fff; border-radius:14px; box-shadow: 0 10px 30px rgba(2,6,23,0.06); transition: transform .25s; }
+.feature-card:hover{ transform: translateY(-6px); }
+
+/* CTA */
+.cta-section{ background: linear-gradient(120deg,#0d6efd,#343a40); color:#fff; }
+
+/* Analytics */
+.metric-box{ background:#fff; border-radius:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+.chart-card{ background:#fff; border-radius:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+
+/* Datasets / Resources */
+.dataset-card{ background:#fff; border-radius:14px; box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+.results-box{ background:#fff; border-radius:14px; box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+
+/* Blog */
+.blog-card{ background:#fff; border-radius:12px; box-shadow: 0 10px 24px rgba(0,0,0,0.08); transition: transform .22s; }
+.blog-card:hover{ transform: translateY(-5px); }
+
+/* Contact */
+.contact-section .card{ border-radius:12px; }
