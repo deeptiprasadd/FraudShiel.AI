@@ -108,7 +108,7 @@
 
 {% block scripts %}
 <script>
-// ✅ AUTO-TEST DATASET + REDIRECT TO ANALYTICS
+// AUTO-TEST DATASET + REDIRECT TO ANALYTICS
 document.addEventListener("DOMContentLoaded", () => {
   const testButtons = document.querySelectorAll(".test-btn");
 
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        // ✅ Show Results
+        // Show Results
         document.getElementById("resTotal").textContent = result.total;
         document.getElementById("resFraud").textContent = result.fraud_count;
         document.getElementById("resRate").textContent = result.fraud_rate;
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById("results").style.display = "block";
 
-        // ✅ Redirect to analytics
+        //Redirect to analytics
         setTimeout(() => {
           window.location.href = "/analytics";
         }, 1200);
@@ -162,3 +162,4 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 {% endblock %}
+
