@@ -8,7 +8,7 @@ app = Flask(__name__)
 BASE = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(BASE, "models")
 
-# ---------- Load ML assets ----------
+# Load ML assets
 def load(path):
     full = os.path.join(MODELS, path)
     if not os.path.exists(full):
@@ -22,9 +22,7 @@ features = load("fraud_features.pkl")
 LAST_RESULTS = None   # Stores last processed dataframe
 
 
-# ---------------------------------------------------------
-# ✅ BLOG ARTICLES (FINAL LIST — ALL 8 ITEMS)
-# ---------------------------------------------------------
+# BLOG ARTICLES (FINAL LIST — ALL 8 ITEMS)
 BLOG_ARTICLES = [
     {
         "slug": "ai-in-banking-fraud-detection",
@@ -92,16 +90,14 @@ def get_article(slug):
     return None
 
 
-# ---------------------------------------------------------
-# ✅ ROUTES
-# ---------------------------------------------------------
+# ROUTES
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-# ---------- Manual Form Checker ----------
+# Manual Form Checker
 @app.route("/checker", methods=["GET", "POST"])
 def checker():
     global LAST_RESULTS
@@ -154,13 +150,13 @@ def upload_csv():
     })
 
 
-# ✅ Fix: alias route for frontend compatibility
+#  Fix: alias route for frontend compatibility
 @app.route("/upload", methods=["POST"])
 def upload_alias():
     return upload_csv()
 
 
-# ---------- Analytics ----------
+# Analytics 
 @app.route("/analytics")
 def analytics():
     global LAST_RESULTS
@@ -191,13 +187,13 @@ def analytics():
     )
 
 
-# ---------- Resources ----------
+# Resources 
 @app.route("/resources")
 def resources():
     return render_template("resources.html")
 
 
-# ---------- Blog ----------
+# Blog 
 @app.route("/blog")
 def blog():
     return render_template("blog.html", articles=BLOG_ARTICLES)
@@ -211,8 +207,7 @@ def blog_post(slug):
     return render_template("blog_post.html", article=article)
 
 
-# ---------------------------------------------------------
-# ✅ Run App
-# ---------------------------------------------------------
+# Run App
 if __name__ == "__main__":
     app.run(debug=True)
+
